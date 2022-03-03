@@ -1,0 +1,26 @@
+aiohttp
+appdirs
+asyncio
+black
+CacheControl
+flake8
+Flask==1.1.1
+Flask-Assets
+Flask-BasicAuth
+Flask-Script
+-e git+https://github.com/digital-land/digital-land-frontend.git#egg=digital-land-frontend
+gunicorn
+itsdangerous==2.0.1
+lockfile
+MarkupSafe
+packaging
+playwright
+pyparsing
+pytest
+pytest-playwright
+python-dateutil
+python-dotenv
+six
+uvicorn
+webassets
+Werkzeug

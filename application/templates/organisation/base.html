@@ -1,0 +1,52 @@
+{% extends "layouts/layout.html" %}
+
+{% block primaryNav %}
+{{ primaryNavigation({
+    "items": [
+        {
+            "text": "Overview",
+            "href": url_for('base.performance')
+        },
+        {
+            "text": "Datasets",
+            "href": url_for('base.datasets')
+        },
+        {
+            "text": "Publishers",
+            "href": url_for('publisher.organisation'),
+            "active": True
+        },
+        {
+            "text": "Sources",
+            "href": url_for('base.sources')
+        },
+        {
+            "text": "Resources",
+            "href": url_for('base.resources')
+        },
+        {
+            "text": "Logs",
+            "href": url_for('base.logs')
+        },
+    ]
+})
+}}
+{% endblock primaryNav %}
+
+{% block footer %}
+<div class="dl-sticky-banner__container" data-module="sticky-banner">
+    <div class="dl-sticky-banner">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+              {# need a macro for this bit, param would set the href #}
+              <a href="#btt-hook" class="govuk-link govuk-link--no-visited-state back-to-top__link">
+                <svg role="presentation" focusable="false" class="dl-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+              </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ super() }}
+{% endblock %}

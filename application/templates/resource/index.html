@@ -1,0 +1,207 @@
+{% extends "resource/base.html" %}
+{% block page_title %}Flask prototyping index{% endblock %}
+
+
+{% block dl_breadcrumbs %}{% endblock %}
+
+
+{% block main %}
+<div class="app-summary-banner">
+  <div class="app-summary-banner__header">
+    <h3 class="govuk-heading-l">Resources summary</h3>
+  </div>
+  <div class="app-summary-banner__body">
+    <div class="app-summary-banner__row">
+      <div id="btt-hook" class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          <div class="app-data-item">
+            <p class="govuk-body app-data-item__label">Resources</p>
+            <span class="app-data-item__number app-!-font-size-60">{{ resource_count }}</span>
+            <details class="govuk-details govuk-details--small app-data-item__explainer" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  What does this tell us?
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                The total number of unique resources digital land have collected, processed and extracted data from.
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <p class="govuk-body app-data-item__label">Datasets</p>
+          <div class="app-data-item">
+            <span class="app-data-item__number app-!-font-size-60">{{ datasets.keys()|length }}</span>
+            <details class="govuk-details govuk-details--small app-data-item__explainer" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  What does this tell us?
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                The number of datasets the {{ resource_count }} resources cover. Some national datasets, such as Heritage Coast, will have very few resources. We will only collect new ones when there has been an update. Potentially, only once a year. However, there will be other datasets, such as Brownfield land, where we collect many more resources. This is because to make a national dataset we need to collect resources from the 360+ publishers and any one of these publishers can update their data at any time.
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="app-data-item">
+            <p class="govuk-body app-data-item__label">Content types</p>
+            <span class="app-data-item__number app-!-font-size-60">{{ content_type_counts|length }}</span>
+            <details class="govuk-details govuk-details--small app-data-item__explainer" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  What does this tell us?
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                The higher the number of different content-types, the more variety there is in the types of resource we have to process. It is easier to process, extract and combine data from the same type of resource.
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<main class="app-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
+{% block content %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-6">Resources</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <h2 class="govuk-heading-m">Filters</h2>
+      <!-- filter by dataset -->
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            By dataset
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <ul class="govuk-list">
+            {% for k, dataset in by_dataset.items() %}
+            <li>
+              <a href="{{ url_for('base.resources', pipeline=dataset.pipeline) }}" class="govuk-link">{{ dataset['pipeline']|replace("-", " ")|capitalize }}</a><span class="govuk-!govuk-!-font-size-19"> ({{ dataset['total'] }})</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </details>
+
+      <!-- filter by organisation -->
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            By organisation
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <ul class="govuk-list">
+            {% for key, organisation in organisations.items() %}
+            <li>
+              <a href="{{ url_for('base.resources', organisation=organisation['organisation']) }}" class="govuk-link">{{ organisation['name'] }}</a><span class="govuk-!govuk-!-font-size-19"> ({{ organisation['resources'] }})</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </details>
+
+      <!-- filter by content-type -->
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            By content_type
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <ul class="govuk-list">
+            {% for content_type in content_type_counts %}
+            <li>
+              <a href="{{ url_for('base.resources', content_type=content_type['content_type']) }}" class="govuk-link">{{ content_type['content_type'] }}</a><span class="govuk-!govuk-!-font-size-19"> ({{ content_type['resource_count'] }})</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </details>
+
+      <!-- search form -->
+      <h2 class="govuk-heading-m">Search</h2>
+      <form action="{{ url_for('base.resources') }}" class="govuk-form">
+        {% from "govuk_frontend_jinja/components/input/macro.html" import govukInput %}
+        <div class="govuk-form-group">
+          {{ govukInput({
+            "label": {
+              "text": "Resource"
+            },
+            "id": "resource",
+            "name": "resource",
+            "value": filters['resource'] if filters['resource'] else ""
+          }) }}
+        </div>
+        <div class="govuk-form-group">
+          <button class="govuk-button govuk-button--secondary">Search</button>
+        </div>
+      </form>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body results-summary">Showing {{ resources|length }} resource{{ "" if total_results == 1 else "s" }}{% if resources|length == 100 %} (limited to most recent 100){% endif %}</p>
+      {% if filters -%}
+      <div class="applied-filters">
+        <div class="applied-filter__group">
+          <span class="applied-filter__name govuk-!-font-weight-bold">Filter:</span>
+          {% for filter in filter_btns %}
+          <span class="applied-filter__item">
+            <a href="{{ url_for('base.resources', **filter['url_params']) }}" class="govuk-link">x<span class="govuk-visually-hidden">remove filtering by {{ filter['value'] }}</span></a>
+            {{ filter['value'] }}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <ul class="govuk-list">
+      {% for resource in resources %}
+      <li class="dl-data-record app-card govuk-!-margin-bottom-3">
+        <h4 class="govuk-heading-s dl-data-record__identifier govuk-!-margin-bottom-0">Resource <a href="{{ url_for('base.resource', resource=resource['resource']) }}">{{ resource['resource']|truncate(15) }}</a></h4>
+        <dl class="govuk-summary-list dl-data-record__properties app-card__properties govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Organisation</dt>
+            <dd class="govuk-summary-list__value">{{ resource['name'] }}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Dataset</dt>
+            <dd class="govuk-summary-list__value">{{ resource['pipeline'] }}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Content type</dt>
+            <dd class="govuk-summary-list__value">{{ resource['content_type'] }}</dd>
+          </div>
+        </dl>
+      </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {% endblock content %}
+</main>
+{% endblock main %}
+
+{% block footer %}
+<div class="dl-sticky-banner__container" data-module="sticky-banner">
+    <div class="dl-sticky-banner">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+              {# need a macro for this bit, param would set the href #}
+              <a href="#btt-hook" class="govuk-link govuk-link--no-visited-state back-to-top__link">
+                <svg role="presentation" focusable="false" class="dl-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+              </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ super() }}
+{% endblock %}

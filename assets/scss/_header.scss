@@ -1,0 +1,23 @@
+.app-light-header {
+  border-bottom-color: govuk-colour("blue");
+
+  .govuk-header__logo {
+    @include govuk-media-query($from: tablet) {
+      width: 50%;
+    }
+  }
+}
+
+.app-header__content {
+  margin-bottom: 10px;
+}
+
+.app-header__team-name {
+  margin-right: 5px;
+}
+
+.app-header__tag {
+  font-size: 12px;
+  margin-top: -6px;
+  vertical-align: middle;
+}

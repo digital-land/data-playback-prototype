@@ -1,0 +1,34 @@
+{% extends "layouts/layout.html" %}
+
+{% block primaryNav %}
+{{ primaryNavigation({
+    "items": [
+        {
+            "text": "Overview",
+            "href": url_for('base.performance')
+        },
+        {
+            "text": "Datasets",
+            "href": url_for('base.datasets')
+        },
+        {
+            "text": "Publishers",
+            "href": url_for('publisher.organisation')
+        },
+        {
+            "text": "Sources",
+            "href": url_for('base.sources')
+        },
+        {
+            "text": "Resources",
+            "href": url_for('base.resources'),
+            "active": True
+        },
+        {
+            "text": "Logs",
+            "href": url_for('base.logs')
+        },
+    ]
+})
+}}
+{% endblock primaryNav %}

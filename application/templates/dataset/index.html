@@ -1,0 +1,208 @@
+{% extends "dataset/base.html" %}
+{% block page_title %}Flask prototyping index{% endblock %}
+
+{% from "digital-land-frontend/components/filter-group/macro.jinja" import dlFilterGroup %}
+{% from "components/helpers.jinja" import random_int %}
+
+{% from 'macro/remove-filter-button.html' import removeFilterButton %}
+
+{% block dl_breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+  <h1 class="govuk-heading-xl">Datasets</h1>
+  <p class="govuk-body-l">A place to see what datasets we have data for.</p>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <!-- <h2 class="govuk-heading-m">Filters</h2> -->
+      <form action="{{ url_for('base.datasets') }}">
+        <!-- filter by typology -->
+        {%- if typologies %}
+        <!-- typology facet -->
+        <div class="govuk-form-group">
+          {% call dlFilterGroup({
+            "title": "Typology",
+            "is_open": True if request.args['typology'] else False,
+            "selected": request.args.getlist('typology')|length if request.args['typology'] else 0
+          }) %}
+          <div class="govuk-radios">
+            {% for typology in typologies %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="typology-{{loop.index}}" name="typology" type="radio" value="{{ typology['typology'] }}"{% if typology['typology'] in request.args.getlist('typology') %} checked="checked"{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="typology-{{loop.index}}">
+                {{ typology['name'] }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          {% endcall %}
+        </div>
+        {% endif -%}
+
+        <!-- filter by theme -->
+        {%- if typologies %}
+        <!-- typology facet -->
+        <div class="govuk-form-group">
+          {% call dlFilterGroup({
+            "title": "Theme",
+            "is_open": True if request.args['theme'] else False,
+            "selected": request.args.getlist('theme')|length if request.args['theme'] else 0
+          }) %}
+          <div class="govuk-radios">
+            {% for theme in themes %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="theme-{{loop.index}}" name="theme" type="radio" value="{{ theme['theme'] }}"{% if theme['theme'] in request.args.getlist('theme') %} checked="checked"{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="theme-{{loop.index}}">
+                {{ theme['name'] }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          {% endcall %}
+        </div>
+        {% endif -%}
+        
+        <div class="dl-filter-group govuk-!-margin-bottom-6">
+          <h3 class="dl-filter-group__heading govuk-heading-s">Data</h3>
+          <div class="dl-filter-group__body">
+            <div class="govuk-form-group">
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" disabled id="active" name="active" type="checkbox" value=1{{ ' checked=checked' if 'active' in filters.keys() }}>
+                  <label class="govuk-label govuk-checkboxes__label dl-secondary-text" for="active">
+                    Show only datasets with data
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Filter
+        </button>
+      </form>
+      
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p id="btt-hook" class="govuk-body results-summary">Showing {{ datasets|length }} dataset{{ "" if datasets|length == 1 else "s" }}</p>
+      {% if filters -%}
+      <div class="applied-filters">
+        {% if request.args and request.args.get('typology') %}
+				<div class="applied-filter__group">
+					<span class="applied-filter__name govuk-!-font-weight-bold">Typology:</span>
+          {% for typology in request.args.getlist('typology') %}
+					<span class="applied-filter__item">
+            {{ removeFilterButton({
+              "filter": {
+                "name": "typology",
+                "value": typology
+              },
+              "url": typology|remove_query_param('typology', request.query_string.decode())
+            }) }}
+          </span>
+          {% endfor %}
+				</div>
+				{% endif %}
+        {% if request.args and request.args.get('theme') %}
+				<div class="applied-filter__group">
+					<span class="applied-filter__name govuk-!-font-weight-bold">Theme:</span>
+          {% for theme in request.args.getlist('theme') %}
+					<span class="applied-filter__item">
+            {{ removeFilterButton({
+              "filter": {
+                "name": "theme",
+                "value": theme
+              },
+              "url": theme|remove_query_param('theme', request.query_string.decode())
+            }) }}
+          </span>
+          {% endfor %}
+				</div>
+				{% endif %}
+        {% if request.args and request.args.get('active') %}
+				<div class="applied-filter__group">
+					<span class="applied-filter__name govuk-!-font-weight-bold">Has data:</span>
+					<span class="applied-filter__item">
+            {{ removeFilterButton({
+              "filter": {
+                "name": "active",
+                "value": "True"
+              },
+              "url": request.args.get('active')|remove_query_param('active', request.query_string.decode())
+            }) }}
+          </span>
+				</div>
+				{% endif %}
+      </div>
+      {% endif %}
+      <ul class="govuk-list">
+        {% for dataset in datasets %}
+        <li class="govuk-!-margin-bottom-3">
+          <article class="app-card app-card--small">
+            <div class="app-card__header">
+              <div class="app-card__header__primary">
+                <h3 class="app-card__title"><a href="{{ url_for('base.dataset', dataset=dataset.dataset) }}" class="govuk-link">{{ dataset['name'] }}</a></h3>
+              </div>
+              <div class="app-card__header__secondary">
+                <div class="flags">
+                {% if not dataset.dataset_active %}
+                  <strong class="govuk-tag govuk-tag--yellow">No data</strong>
+                {% endif -%}
+                </div>
+                <dl class="app-card__datalist">
+                  <div class="app-card__datalist__row">
+                    <dt class="app-card__datalist__key">Id:</dt>
+                    <dd class="app-card__datalist__value">{{ dataset.dataset }}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <div class="app-card__body">
+              <div class="app-card__row">
+                <div class="app-card__properties">
+                  <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                    
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">Typology</dt>
+                      <dd class="govuk-summary-list__value">{{ dataset['typology'] }}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">Theme</dt>
+                      <dd class="govuk-summary-list__value">{{ dataset['dataset_themes'] }}</dd>
+                    </div>
+                    
+                  </dl>
+                </div>
+              </div>
+
+            </div>
+          </article>
+          
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+</main>
+{% endblock %}
+
+{% block footer %}
+<div class="dl-sticky-banner__container" data-module="sticky-banner">
+    <div class="dl-sticky-banner">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+              {# need a macro for this bit, param would set the href #}
+              <a href="#btt-hook" class="govuk-link govuk-link--no-visited-state back-to-top__link">
+                <svg role="presentation" focusable="false" class="dl-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+              </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ super() }}
+{% endblock %}
