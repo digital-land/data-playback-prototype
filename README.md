@@ -1,6 +1,6 @@
-# Maturity model prototype
+# Data submission playback prototype
 
-Based on the govuk-flask-prototype-kit
+Based on the [govuk-flask-prototype-kit](https://github.com/digital-land/govuk-flask-prototype-kit)
 
 ### Getting staerted
 
@@ -8,11 +8,15 @@ We recommend using a virtual env.
 
 Install dependencies
 
-  make init
+`make init`
 
 Run flask application
 
-  flask run
+`flask run`
+
+Run flask application and watch for changes
+
+`make watch`
 
 ### Before pushing changes
 
