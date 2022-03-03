@@ -28,5 +28,8 @@ javascripts:
 stylesheets:
 	npm run nps build.stylesheets
 
-watch:
+frontend-watch:
 	npm run watch
+
+watch:
+	make -j 2 run frontend-watch
