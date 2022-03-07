@@ -10,11 +10,11 @@
       <div class="header-proposition">
         <div class="govuk-header__content">
           <a href="https://digital-land.github.io/" class="govuk-header__link govuk-header__link--service-name govuk-header__link--service-name--bold">
-        Digital Land
+        DLUHC Planning Data
         </a>
           <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
           <span class="dl-header__service-name">
-            <a href="/" class="govuk-header__link govuk-header__link--service-name">Operations dashboard</a>
+            <a href="/" class="govuk-header__link govuk-header__link--service-name">Prototype</a>
           </span>
         </div>
       </div>
@@ -26,77 +26,16 @@
 {% block content %}
 
   <main id="content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-l">Overview</h3>
-        <p class="govuk-body">
-        An overview of the whole platform, including the number of datasets and number of publishers.
-      </p>
-        <p class="govuk-body govuk-!-margin-bottom-0">
-          <a href="{{ url_for('base.performance') }}" class="govuk-link govuk-!-font-weight-bold">Browse overview</a>
-        </p>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-l">Datasets</h3>
-        <p class="govuk-body">
-        A list of all the datasets the platform collects data for and how complete Digital Land believes each of the datasets are. 
-      </p>
-        <p class="govuk-body govuk-!-margin-bottom-0">
-          <a href="{{ url_for('base.datasets') }}" class="govuk-link govuk-!-font-weight-bold">Browse datasets</a>
-        </p>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-l">Publishers</h3>
-        <p class="govuk-body">
-        A complete list of all the publishers we are collecting data from.
-      </p>
-        <p class="govuk-body govuk-!-margin-bottom-0">
-          <a href="{{ url_for('publisher.organisation') }}" class="govuk-link govuk-!-font-weight-bold">Browse publishers</a>
-        </p>
-      </div>
 
-    </div>
-
-    <div class="govuk-grid-row govuk-!-margin-top-9">
-      <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-l">Sources</h3>
-        <p class="govuk-body">
-        A complete list of all the sources we have collected data from.
-      </p>
-        <p class="govuk-body govuk-!-margin-bottom-0">
-          <a href="{{ url_for('base.sources') }}" class="govuk-link govuk-!-font-weight-bold">Browse sources</a>
-        </p>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-l">Resources</h3>
-        <p class="govuk-body">
-        A complete list of all the resources we have collected and processed.
-      </p>
-        <p class="govuk-body govuk-!-margin-bottom-0">
-          <a href="{{ url_for('base.resources') }}" class="govuk-link govuk-!-font-weight-bold">Browse resources</a>
-        </p>
-      </div>
-      <div class="govuk-grid-column-full">
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-      </div>
-    </div>
-    <!-- 
-  <h2 class="govuk-heading-m">Additional pages</h2>
-  <ul class="govuk-list">
-    <li>
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-2"><a href="{{ url_for('base.dataset', dataset='Brownfield land') }}" class="govuk-link">Dataset example (Brownfield-land)</a></h3>
-      <p class="govuk-body"></p>
-    </li>
-    <li>
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-2"><a href="{{ url_for('base.resource', resource='000b261f1757b69b9435ec20bae8f2b141677d17c054f01b187c8952e117db33') }}" class="govuk-link">Resource example</a></h3>
-      <p class="govuk-body"></p>
-    </li>
-    <li>
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-2"><a href="https://docs.google.com/spreadsheets/d/1Euj1Hok-gggrOyZFbaRl7A7Ck7bL6koYTGiuOMHjRF8" class="govuk-link">Data spreadsheet</a></h3>
-      <p class="govuk-body"></p>
-    </li>
-    
-  </ul>-->
+    <h2 class="govuk-heading-l">Prototype(s)</h2>
+    <ul class="govuk-list">
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+          <a href="{{ url_for('base.dataset', dataset='Brownfield land') }}" class="govuk-link">View local planning authority datasets</a>
+        </h3>
+        <p class="govuk-body"></p>
+      </li>
+    </ul>
   </main>
 {% endblock %}
 

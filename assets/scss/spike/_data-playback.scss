@@ -1,16 +1,16 @@
 .app-maps {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  // display: flex;
+  // justify-content: space-between;
+  // flex-wrap: wrap;
 
   .app-side-by-side,
   .app-side-by-side__details {
-    flex: 49%;
+    // flex: 100%;
   }
 
-  .app-side-by-side:first-of-type .dl-map__wrapper {
-    border-right: 4px solid $govuk-border-colour;
-  }
+  // .app-side-by-side:first-of-type .dl-map__wrapper {
+  //   border-right: 4px solid $govuk-border-colour;
+  // }
 }
 
 .app-intersect-update-panel {
@@ -53,14 +53,62 @@
 
   button {
     padding: 5px;
-    background: govuk-colour("white");
+    background: govuk-colour('white');
     border: 0;
-    box-shadow: 0 0 3px rgba(11, 12, 12, .8);
+    box-shadow: 0 0 3px rgba(11, 12, 12, 0.8);
 
     &:hover {
       padding: 4px;
-      background: darken(govuk-colour("white"), 2);
-      border: 1px solid govuk-colour("dark-grey");
+      background: darken(govuk-colour('white'), 2);
+      border: 1px solid govuk-colour('dark-grey');
     }
+  }
+}
+
+.app-source-data-explorer {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row-reverse;
+  &__panel {
+    width: 30%;
+    min-width: 300px;
+    background: govuk-colour('light-grey');
+    padding: 1.5em;
+    display: flex;
+    flex-direction: column;
+  }
+  &__map {
+    width: 70%;
+    border-right: 2px solid #666;
+  }
+  &__info {
+    flex: 0 1 auto;
+  }
+  &__items {
+    border-top: 5px solid govuk-colour('blue');
+    padding-top: 1em;
+    max-height: 420px;
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: auto;
+
+    // this hopefully makes it more obvious that the content can be scrolled
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .entity-item {
+    padding: 0.5em;
+  }
+  .entity-item:nth-child(even) {
+    background: darken(govuk-colour('light-grey'), 4);
   }
 }
