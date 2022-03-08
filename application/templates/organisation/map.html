@@ -63,15 +63,18 @@
 <div class="app-maps">
 
   <div class="app-source-data-explorer">
-    <div class="app-source-data-explorer__panel">
 
-      <div class="app-source-data-explorer__info">
+    <div class="app-source-data-explorer__info">
+
+      <div class="app-source-data-explorer__info__content">
         <p class="govuk-heading-m">Dataset: <a class="govuk-link govuk-link--no-visited-state" href="">{{ dataset['name'] }}</a>
         </p>
         <p class="app-side-by-side__summary">{{ entities_not_by_publisher|length }} additional entit{{ "y" if entities_not_by_publisher|length == 1 else "ies" }} have been collected from {{ additional_publishers|length }} publisher{{ "" if additional_publishers|length == 1 else "s" }}</p>
+      </div>
 
+      <div class="app-source-data-explorer__info__content">
         <form action="">
-          <div class="govuk-form-group">
+          <div class="govuk-form-group govuk-!-margin-0">
             <label class="govuk-label" for="sort">Select dataset</label>
             <select class="govuk-select" id="sort" name="dataset" data-module="dataset-select">
               {% for d in expected_datasets.keys() %}
@@ -81,32 +84,45 @@
           </div>
         </form>
       </div>
-
-      <div class="app-source-data-explorer__items">
-        <div class="app-side-by-side__details" data-module="non-publisher-display"></div>
-      </div>
     </div>
-    <!-- / panel -->
-    <div class="app-source-data-explorer__map">
-      <div class="app-side-by-side">
 
-        <div class="dl-map__wrapper" style="min-height: 700px;">
+    <div class="app-source-data-explorer__viewarea">
 
-          {% include 'partials/zoom-controls.html' %}
+      <div class="app-source-data-explorer__panel">
+        <div class="app-source-data-explorer__items">
+          <div class="app-side-by-side__details" data-module="non-publisher-display"></div>
+        </div>
+      </div>
+      <!-- / panel -->
+      <div class="app-source-data-explorer__map">
+        <div class="app-side-by-side">
 
-          <div class="app-map__boundary-zoom">
-            <button>Zoom to LPA boundary</button>
+          <div class="dl-map__wrapper" style="min-height: 700px;">
+
+            {% include 'partials/zoom-controls.html' %}
+
+            <div id="mapid2" class="dl-map" aria-labelledby="aria-label-national-map"></div>
+
           </div>
 
-          <div id="mapid2" class="dl-map" aria-labelledby="aria-label-national-map"></div>
-
         </div>
-
       </div>
+      <!-- / map container -->
+
     </div>
-    <!-- / map container -->
+    <!-- / explorer__viewarea -->
+
+    <div class="app-source-data-explorer__footer">
+
+      <button class="" data-module="lpa-boundary-toggle"></button>
+
+      <div class="app-map__boundary-zoom">
+        <button>Zoom to LPA boundary</button>
+      </div>
+
+    </div>
+
   </div>
-  <button class="" data-module="lpa-boundary-toggle"></button>
 </div>
 
 {% endblock %}
