@@ -114,11 +114,8 @@
 
     <div class="app-source-data-explorer__footer">
 
-      <button class="" data-module="lpa-boundary-toggle"></button>
-
-      <div class="app-map__boundary-zoom">
-        <button>Zoom to LPA boundary</button>
-      </div>
+      <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="lpa-boundary-toggle"></button>
+      <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="app-map__boundary-zoom">Zoom to LPA boundary</button>
 
     </div>
 
@@ -260,9 +257,7 @@
     // display publisher boundary
     const boundaryFilter = ['==', 'reference', statGeography]
     appMap.createDatasetLayers('local-authority-district', "polygon", boundaryFilter, {style: localAuthorityBoundaryStyle})
-    const $btn = appMap
-      ._container
-      .querySelector('.app-map__boundary-zoom')
+    const $btn = document.querySelector('#app-map__boundary-zoom')
     const flyToBoundaryBtn = new SpikeMap
       .FlyToBoundary($btn, appMap)
       .init()
@@ -330,7 +325,7 @@
   const $nonPublisherDisplayPanel = document.querySelector("[data-module='non-publisher-display']")
 
   const intersectMap = new SpikeMap
-    .AppMap('mapid2', $zoomMods[1])
+    .AppMap('mapid2', $zoomMods[0])
     .init({
       baseTileStyleFilePath: "https://api.maptiler.com/maps/918166e5-9890-4e18-8f18-4ef96be1a2d4/style.json?key=kira3KM2jYGvDA4xNkYt",
       onLoadCallback: nonPublisherMapOnLoad,

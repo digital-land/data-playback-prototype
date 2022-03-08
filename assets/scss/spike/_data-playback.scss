@@ -25,6 +25,7 @@
 
 .app-entity-display__properties {
   font-size: 1em;
+  margin-bottom: 0;
 }
 
 .app-side-by-side__summary {
@@ -78,6 +79,15 @@
 
   &__footer {
     border-top: 2px solid #666;
+    border-bottom: 2px solid #666;
+    display: flex;
+    padding: 1.5em 1em;
+    > * {
+      margin-right: 1em;
+    }
+    button {
+      border: 2px solid #333;
+    }
   }
 
   &__panel {
@@ -91,7 +101,7 @@
     width: 70%;
     border-right: 2px solid #666;
   }
-  &__footer,
+
   &__info {
     padding: 1.5em;
     display: flex;
@@ -122,9 +132,10 @@
   }
 
   .entity-item {
-    padding: 0.5em;
+    margin-bottom: 1em;
   }
   .entity-item:nth-child(even) {
+    padding: 0.5em;
     background: darken(govuk-colour('light-grey'), 4);
   }
 }
