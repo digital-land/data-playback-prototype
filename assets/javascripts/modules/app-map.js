@@ -68,14 +68,25 @@ AppMap.prototype.highlightFeaturesOn = function () {
   }
   const that = this
   this.map.on('click', function (e) {
-    const bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]]
+    const bbox = [
+      [e.point.x - 5, e.point.y - 5],
+      [e.point.x + 5, e.point.y + 5]
+    ]
     console.log('clickable', that.clickableLayers)
     const features = that.intersectBBox(bbox, that.clickableLayers) // here is not working!
-    const entities = features.map(function (f) { return f.properties.entity })
+    const entities = features.map(function (f) {
+      return f.properties.entity
+    })
     console.log('entities', entities, features)
     if (entities.length) {
       highlightLayers.forEach(function (hlLayer) {
-        that.map.setFilter(hlLayer, ['match', ['get', 'entity'], entities, true, false])
+        that.map.setFilter(hlLayer, [
+          'match',
+          ['get', 'entity'],
+          entities,
+          true,
+          false
+        ])
       })
     } else {
       highlightLayers.forEach(function (hlLayer) {
@@ -108,23 +119,37 @@ AppMap.prototype.createMap = function () {
 
   // add fullscreen control
   if (this.allowFullscreen) {
-    map.addControl(new maplibregl.FullscreenControl({
-      container: document.querySelector(this.mapContainerSelector)
-    }), 'bottom-left')
+    map.addControl(
+      new maplibregl.FullscreenControl({
+        container: document.querySelector(this.mapContainerSelector)
+      }),
+      'bottom-left'
+    )
   }
   return map
 }
 
 // should this be part of component that extends AppMap?
-AppMap.prototype.createDatasetLayers = function (dataset, _type, filter, options) {
-  console.log("firing")
-  const _options = Object.assign({
-    style: this.styleProperties
-  }, options || {})
+AppMap.prototype.createDatasetLayers = function (
+  dataset,
+  _type,
+  filter,
+  options
+) {
+  console.log('firing')
+  const _options = Object.assign(
+    {
+      style: this.styleProperties
+    },
+    options || {}
+  )
   let layers
   // polygons need a fill and a line
   if (_type === 'polygon') {
-    layers = [this.createFillLayer(dataset, _options), this.createLineLayer(dataset, _options)]
+    layers = [
+      this.createFillLayer(dataset, _options),
+      this.createLineLayer(dataset, _options)
+    ]
     if (filter) {
       this.setFilter([dataset + 'Fill', dataset + 'Line'], filter)
     }
@@ -138,69 +163,102 @@ AppMap.prototype.createDatasetLayers = function (dataset, _type, filter, options
 }
 
 AppMap.prototype.createCircleLayer = function (layerId, options) {
-  const layerOptions = Object.assign({
-    source: this.sourceName,
-    sourceLayer: layerId,
-    style: {
-      colour: this.styleProperties.colour,
-      opacity: this.styleProperties.opacity,
-      weight: this.styleProperties.weight
-    }
-  }, options || {})
-  this.createVectorLayer(layerId, layerOptions.source, layerOptions.sourceLayer, 'circle', {
-    'circle-color': layerOptions.style.colour,
-    'circle-opacity': layerOptions.style.opacity,
-    'circle-radius': {
-      base: 1.5,
-      stops: [
-        [6, 1],
-        [22, 180]
-      ]
+  const layerOptions = Object.assign(
+    {
+      source: this.sourceName,
+      sourceLayer: layerId,
+      style: {
+        colour: this.styleProperties.colour,
+        opacity: this.styleProperties.opacity,
+        weight: this.styleProperties.weight
+      }
     },
-    'circle-stroke-color': layerOptions.style.colour,
-    'circle-stroke-width': layerOptions.style.weight
-  })
+    options || {}
+  )
+  this.createVectorLayer(
+    layerId,
+    layerOptions.source,
+    layerOptions.sourceLayer,
+    'circle',
+    {
+      'circle-color': layerOptions.style.colour,
+      'circle-opacity': layerOptions.style.opacity,
+      'circle-radius': {
+        base: 1.5,
+        stops: [
+          [6, 1],
+          [22, 180]
+        ]
+      },
+      'circle-stroke-color': layerOptions.style.colour,
+      'circle-stroke-width': layerOptions.style.weight
+    }
+  )
   return layerId
 }
 
 AppMap.prototype.createFillLayer = function (layerId, options) {
   // NEEDS Polyfill for IE
-  const layerOptions = Object.assign({
-    source: this.sourceName,
-    sourceLayer: layerId,
-    style: {
-      colour: this.styleProperties.colour,
-      opacity: this.styleProperties.opacity
-    }
-  }, options || {})
+  const layerOptions = Object.assign(
+    {
+      source: this.sourceName,
+      sourceLayer: layerId,
+      style: {
+        colour: this.styleProperties.colour,
+        opacity: this.styleProperties.opacity
+      }
+    },
+    options || {}
+  )
   // create fill layer
   const layerName = layerId + 'Fill'
-  this.createVectorLayer(layerName, layerOptions.source, layerOptions.sourceLayer, 'fill', {
-    'fill-color': layerOptions.style.colour,
-    'fill-opacity': layerOptions.style.opacity
-  })
+  this.createVectorLayer(
+    layerName,
+    layerOptions.source,
+    layerOptions.sourceLayer,
+    'fill',
+    {
+      'fill-color': layerOptions.style.colour,
+      'fill-opacity': layerOptions.style.opacity
+    }
+  )
   return layerName
 }
 
 AppMap.prototype.createLineLayer = function (layerId, options) {
   // NEEDS Polyfill for IE
-  const layerOptions = Object.assign({
-    source: this.sourceName,
-    sourceLayer: layerId,
-    style: {
-      colour: this.styleProperties.colour,
-      weight: this.styleProperties.weight
-    }
-  }, options || {})
+  const layerOptions = Object.assign(
+    {
+      source: this.sourceName,
+      sourceLayer: layerId,
+      style: {
+        colour: this.styleProperties.colour,
+        weight: this.styleProperties.weight
+      }
+    },
+    options || {}
+  )
   const layerName = layerId + 'Line'
-  this.createVectorLayer(layerId + 'Line', layerOptions.source, layerOptions.sourceLayer, 'line', {
-    'line-color': layerOptions.style.colour,
-    'line-width': layerOptions.style.weight
-  })
+  this.createVectorLayer(
+    layerId + 'Line',
+    layerOptions.source,
+    layerOptions.sourceLayer,
+    'line',
+    {
+      'line-color': layerOptions.style.colour,
+      'line-width': layerOptions.style.weight
+    }
+  )
   return layerName
 }
 
-AppMap.prototype.createVectorLayer = function (layerId, source, sourceLayer, _type, paintOptions) {
+AppMap.prototype.createVectorLayer = function (
+  layerId,
+  source,
+  sourceLayer,
+  _type,
+  paintOptions
+) {
   this.map.addLayer({
     id: layerId,
     type: _type,
@@ -212,17 +270,23 @@ AppMap.prototype.createVectorLayer = function (layerId, source, sourceLayer, _ty
 }
 
 AppMap.prototype.defaultClickHandler = function (e) {
-  const bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]]
+  const bbox = [
+    [e.point.x - 5, e.point.y - 5],
+    [e.point.x + 5, e.point.y + 5]
+  ]
   const clickableLayers = this.getClickableLayers()
   const features = this.intersectBBox(bbox, clickableLayers)
   console.log('clicked features', features)
 }
 
 AppMap.prototype.flyToDataset = function (dataset, filter, options) {
-  const _options = Object.assign({
-    source: this.sourceName,
-    returnFeatures: false
-  }, options || {})
+  const _options = Object.assign(
+    {
+      source: this.sourceName,
+      returnFeatures: false
+    },
+    options || {}
+  )
 
   const matchedFeatures = this.map.querySourceFeatures(_options.source, {
     filter: filter,
@@ -231,7 +295,10 @@ AppMap.prototype.flyToDataset = function (dataset, filter, options) {
 
   if (matchedFeatures.length) {
     const bbox = this.getBBox(matchedFeatures)
-    this.map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]])
+    this.map.fitBounds([
+      [bbox[0], bbox[1]],
+      [bbox[2], bbox[3]]
+    ])
   }
 
   if (_options.returnFeatures) {
@@ -315,7 +382,11 @@ AppMap.prototype.onMapLoad = function () {
 
   // add source to map
   this.addSource()
-  this.zoomControl = new DLMaps.ZoomControls(this.$zoomControls, this.map, this.map.getZoom()).init({})
+  this.zoomControl = new DLMaps.ZoomControls(
+    this.$zoomControls,
+    this.map,
+    this.map.getZoom()
+  ).init({})
 
   // do we want to be able to click on the features?
   if (this.clickableFeatures) {
@@ -357,11 +428,14 @@ AppMap.prototype.setupOptions = function (params) {
     center: [0, 52],
     zoom: 6
   }
-  this.baseTileStyleFilePath = params.baseTileStyleFilePath || './base-tile.json'
+  this.baseTileStyleFilePath =
+    params.baseTileStyleFilePath || './base-tile.json'
   this.mapContainerSelector = params.mapContainerSelector || '.dl-map__wrapper'
   this.allowFullscreen = params.allowFullscreen || true
   this.sourceName = params.sourceName || 'dl-vectors'
-  this.vectorSource = params.vectorSource || 'https://datasette-tiles.digital-land.info/-/tiles/dataset_tiles/{z}/{x}/{y}.vector.pbf'
+  this.vectorSource =
+    params.vectorSource ||
+    'https://datasette-tiles.digital-land.info/-/tiles/dataset_tiles/{z}/{x}/{y}.vector.pbf'
   this.minMapZoom = params.minMapZoom || 5
   this.maxMapZoom = params.maxMapZoom || 15
 
@@ -378,7 +452,7 @@ AppMap.prototype.setupOptions = function (params) {
   this.popupWidth = params.popupWidth || '260px'
   this.popupMaxListLength = params.popupMaxListLength || 10
 
-  this.highlightColour = params.highlightColour || "#ffdd00"
+  this.highlightColour = params.highlightColour || '#ffdd00'
 }
 
 export default AppMap

@@ -69,7 +69,7 @@
       <div class="app-source-data-explorer__info__content">
         <p class="govuk-heading-m">Dataset: <a class="govuk-link govuk-link--no-visited-state" href="">{{ dataset['name'] }}</a>
         </p>
-        <p class="app-side-by-side__summary">{{ entities_not_by_publisher|length }} additional entit{{ "y" if entities_not_by_publisher|length == 1 else "ies" }} have been collected from {{ additional_publishers|length }} publisher{{ "" if additional_publishers|length == 1 else "s" }}</p>
+        <p class="app-side-by-side__summary{{ ' dl-error-text' if publisher_entities|length == 0 }}">{{ publisher_entities|length }} entit{{ "y" if publisher_entities|length == 1 else "ies" }} collected from {{ organisation['name'] }}</p>
       </div>
 
       <div class="app-source-data-explorer__info__content">
@@ -90,7 +90,7 @@
 
       <div class="app-source-data-explorer__panel">
         <div class="app-source-data-explorer__items">
-          <div class="app-side-by-side__details" data-module="non-publisher-display"></div>
+          <div class="app-side-by-side__details" data-module="publisher-display"></div>
         </div>
       </div>
       <!-- / panel -->
@@ -101,7 +101,7 @@
 
             {% include 'partials/zoom-controls.html' %}
 
-            <div id="mapid2" class="dl-map" aria-labelledby="aria-label-national-map"></div>
+            <div id="mapid" class="dl-map" aria-labelledby="aria-label-national-map"></div>
 
           </div>
 
@@ -248,12 +248,7 @@
   }
   const publisher_entities = {{publisher_entities|tojson }};
 
-  // =============================
-  // Map for entities not by org
-  // =============================
-  const entities_not_by_publisher = {{entities_not_by_publisher|tojson }};
-  console.log("Extra entities", entities_not_by_publisher.length)
-  const nonPublisherMapOnLoad = function (appMap) {
+  const publisherMapOnLoad = function (appMap) {
     // display publisher boundary
     const boundaryFilter = ['==', 'reference', statGeography]
     appMap.createDatasetLayers('local-authority-district', "polygon", boundaryFilter, {style: localAuthorityBoundaryStyle})
@@ -266,36 +261,23 @@
     toggleComponent.addLayer({map: appMap.map, name: "local-authority-districtFill"})
     toggleComponent.addLayer({map: appMap.map, name: "local-authority-districtLine"})
 
-    let filter = []
-    if (entities_not_by_publisher.length) {
-      // display conservation areas intersecting with boundary
-      filter = [
-        'match',
-        [
-          'get', 'entity'
-        ],
-        entities_not_by_publisher,
-        true,
-        false
-      ]
-      appMap.createDatasetLayers(dataset['dataset'], datasetType, filter)
+    const filter = ['==', 'organisation_entity', parseInt(organisationEntity)]
+    appMap.createDatasetLayers(dataset['dataset'], datasetType, filter, {})
 
-      // only want conservation areas to be clickable
-      if (datasetType === "point") {
-        appMap.setClickableLayers([dataset['dataset']])
-      } else {
-        appMap.setClickableLayers([dataset['dataset'] + 'Fill'])
-      }
-
-      // enable highlights
-      appMap.highlightFeaturesOn()
-
-      // enable selecting entity from panel
-      // Feature request from Tony
-      const nonPubSelectEntity = new SpikeMap
-        .SelectedEntity(appMap, entityPanels[0], $mapsContainer)
-        .init({datasetName: dataset['dataset'], datasetType: datasetType})
+    // only want conservation areas to be clickable
+    if (datasetType === "point") {
+      appMap.setClickableLayers([dataset['dataset']])
+    } else {
+      appMap.setClickableLayers([dataset['dataset'] + 'Fill'])
     }
+
+    // enable highlights
+    appMap.highlightFeaturesOn()
+
+    // enable selecting entity from panel
+    const pubSelectEntity = new SpikeMap
+      .SelectedEntity(appMap, entityPanels[0], $mapsContainer)
+      .init({datasetName: dataset['dataset'], datasetType: datasetType})
 
     let flownTo = false
     appMap
@@ -303,7 +285,7 @@
       .on('sourcedata', function (e) {
         if (!flownTo) {
           if (appMap.map.getSource('dl-vectors') && appMap.map.isSourceLoaded('dl-vectors')) {
-            if (entities_not_by_publisher.length) {
+            if (publisher_entities.length) {
               var features = appMap.flyToDataset(dataset['dataset'], filter, {returnFeatures: true})
             } else {
               var features = appMap.flyToDataset('local-authority-district', [
@@ -322,21 +304,13 @@
       });
   }
 
-  const $nonPublisherDisplayPanel = document.querySelector("[data-module='non-publisher-display']")
+  const $publisherDisplayPanel = document.querySelector("[data-module='publisher-display']")
 
-  const intersectMap = new SpikeMap
-    .AppMap('mapid2', $zoomMods[0])
-    .init({
-      baseTileStyleFilePath: "https://api.maptiler.com/maps/918166e5-9890-4e18-8f18-4ef96be1a2d4/style.json?key=kira3KM2jYGvDA4xNkYt",
-      onLoadCallback: nonPublisherMapOnLoad,
-      styleProperties: {
-        colour: '#d4351c',
-        opacity: 0.5,
-        weight: 2
-      }
-    })
+  const publisherMap = new SpikeMap
+    .AppMap('mapid', $zoomMods[0])
+    .init({baseTileStyleFilePath: "https://api.maptiler.com/maps/918166e5-9890-4e18-8f18-4ef96be1a2d4/style.json?key=kira3KM2jYGvDA4xNkYt", onLoadCallback: publisherMapOnLoad})
 
-  intersectMap.addClickListener(function (e) {
+  publisherMap.addClickListener(function (e) {
     var bbox = [
       [
         e.point.x - 5,
@@ -351,7 +325,7 @@
       ? dataset['dataset']
       : dataset['dataset'] + "Fill"
     const features = this.intersectBBox(bbox, [layerName])
-    displayEntityDetails(features, $nonPublisherDisplayPanel);
+    displayEntityDetails(features, $publisherDisplayPanel);
   })
 </script>
 {% endblock %}

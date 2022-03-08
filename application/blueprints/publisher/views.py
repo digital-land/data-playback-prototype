@@ -188,7 +188,7 @@ def map(prefix, org_id):
     publisher_entities = get_entities(
         {
             "dataset": dataset["dataset"],
-            "organisation_entity": organisation["entity"],
+            "organisation-entity": organisation["entity"],
             "limit": "500",
         }
     )
