@@ -261,7 +261,7 @@
     toggleComponent.addLayer({map: appMap.map, name: "local-authority-districtFill"})
     toggleComponent.addLayer({map: appMap.map, name: "local-authority-districtLine"})
 
-    const filter = ['==', 'organisation_entity', parseInt(organisationEntity)]
+    const filter = ['==', 'organisation-entity', organisationEntity]
     appMap.createDatasetLayers(dataset['dataset'], datasetType, filter, {})
 
     // only want conservation areas to be clickable
